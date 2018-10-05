@@ -132,26 +132,19 @@ int main() {
 	// Create 9 threads for 9 3x3 subsections, 9 threads for 9 columns and 9 threads for 9 rows.
 	// This will end up with a total of 27 threads.
 	for (i = 0; i < 9; i++) {
-		for (j = 0; j < 9; j++) {						
-			if (i%3 == 0 && j%3 == 0) {
-				parameters *data = (parameters *) malloc(sizeof(parameters));	
-				data->row = i;		
-				data->column = j;
-				pthread_create(&threads[threadIndex++], NULL, is3x3Valid, data); // 3x3 subsection threads
-			}
-			if (i == 0) {
-				parameters *columnData = (parameters *) malloc(sizeof(parameters));	
-				columnData->row = i;		
-				columnData->column = j;
-				pthread_create(&threads[threadIndex++], NULL, isColumnValid, columnData);	// column threads
-			}
-			if (j == 0) {
-				parameters *rowData = (parameters *) malloc(sizeof(parameters));	
-				rowData->row = i;		
-				rowData->column = j;
-				pthread_create(&threads[threadIndex++], NULL, isRowValid, rowData); // row threads
-			}
-		}
+		parameters *columnData = (parameters *) malloc(sizeof(parameters));	
+		
+		columnData->row = 0;		
+		columnData->column = i;
+		pthread_create(&threads[threadIndex++], NULL, isColumnValid, columnData);	// column threads
+		
+		rowData->row = i;		
+		rowData->column = 0;
+		pthread_create(&threads[threadIndex++], NULL, isRowValid, rowData); // row threads
+		
+		data->row = 3*(i/3); // 0 0 0 3 3 3 6 6 6		
+		data->column = 3*(j%3); //0 3 6 0 3 6 0 3 6
+		pthread_create(&threads[threadIndex++], NULL, is3x3Valid, data); // 3x3 subsection threads
 	}
 
 	for (i = 0; i < num_threads; i++) {
