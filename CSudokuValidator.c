@@ -143,7 +143,7 @@ int main() {
 		pthread_create(&threads[threadIndex++], NULL, isRowValid, rowData); // row threads
 		
 		data->row = 3*(i/3); // 0 0 0 3 3 3 6 6 6		
-		data->column = 3*(j%3); //0 3 6 0 3 6 0 3 6
+		data->column = 3*(i%3); //0 3 6 0 3 6 0 3 6
 		pthread_create(&threads[threadIndex++], NULL, is3x3Valid, data); // 3x3 subsection threads
 	}
 
